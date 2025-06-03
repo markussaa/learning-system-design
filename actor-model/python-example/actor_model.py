@@ -2,10 +2,10 @@ import asyncio
 
 class Actor:
     def __init__(self):
-        pass
+        self.mailbox = asyncio.Queue()
     
     async def send(self, message):
-        print(message)
+        await self.mailbox.put(message)
 
     async def run(self):
         raise NotImplementedError()
