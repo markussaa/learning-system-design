@@ -21,6 +21,7 @@ class UserActor(Actor):
     def __init__(self, logger):
         super().__init__()
         self.logger = logger
+        self.valid_users = {123, 456}
         
     async def run(self):
         while True:
@@ -31,7 +32,11 @@ class UserActor(Actor):
 
             await self.logger.send(f"Validated user: {user_id}")
 
-            reply_to.set_result(True)
+            is_valid = user_id in self.valid_users 
+
+            await self.logger.send(f"Checked user {user_id}: {'Valid' if is_valid else 'Invalid'}")
+
+            reply_to.set_result(is_valid)
             
 
 class APIActor(Actor):
