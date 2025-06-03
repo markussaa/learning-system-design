@@ -27,6 +27,16 @@ class UserActor(Actor):
             message = await self.mailbox.get()
             print(f"[LOG] {message}")
 
+class APIActor(Actor):
+    def __init__(self, logger):
+        super().__init__()
+        self.logger = logger
+        
+    async def run(self):
+        while True:
+            message = await self.mailbox.get()
+            print(f"[LOG] {message}")
+
 class PaymentActor(Actor):
     def __init__(self, logger):
         super().__init__()
