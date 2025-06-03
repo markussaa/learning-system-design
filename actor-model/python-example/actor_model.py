@@ -6,14 +6,29 @@ class Actor:
     
     async def send(self, message):
         await self.mailbox.put(message)
+        print(self.mailbox)
 
     async def run(self):
         raise NotImplementedError()
 
+class LoggerActor(Actor):
+    async def run(self):
+        while True:
+            message = await self.mailbox.get()
+            print(f"[LOG] {message}")
 
 async def main():
-    actor = Actor()
+    logger = LoggerActor()
 
-    await actor.send("Hello World")
+    tasks = [asyncio.create_task(actor.run()) for actor in [logger]]
+
+    await logger.send("Hello world")
+
+    await asyncio.sleep(1)
+
+    for task in tasks:
+        task.cancel()
+
+    await asyncio.gather(*tasks, return_exceptions=True)
 
 asyncio.run(main())
